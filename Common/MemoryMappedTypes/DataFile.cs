@@ -24,7 +24,8 @@ public readonly ref struct MapFeatureData
     public GeometryType Type { get; init; }
     public ReadOnlySpan<char> Label { get; init; }
     public ReadOnlySpan<Coordinate> Coordinates { get; init; }
-    public Dictionary<string, string> Properties { get; init; }
+    //changet dictionary to use the new enumerator instead of string
+    public Dictionary<drawable_terrain_types, string> Properties { get; init; }
 }
 
 /// <summary>
@@ -112,6 +113,7 @@ public unsafe class DataFile : IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    
     private MapFeature* GetFeature(int i, ulong offset)
     {
         return (MapFeature*)(_ptr + offset + TileBlockHeaderSizeInBytes + i * MapFeatureSizeInBytes);
@@ -181,11 +183,19 @@ public unsafe class DataFile : IDisposable
 
                 if (isFeatureInBBox)
                 {
-                    var properties = new Dictionary<string, string>(feature->PropertyCount);
+                    //changet dictionary to use the new enumerator instead of string
+                    var properties = new Dictionary<drawable_terrain_types, string>(feature->PropertyCount);
                     for (var p = 0; p < feature->PropertyCount; ++p)
                     {
                         GetProperty(header.Tile.Value.StringsOffsetInBytes, header.Tile.Value.CharactersOffsetInBytes, p * 2 + feature->PropertiesOffset, out var key, out var value);
-                        properties.Add(key.ToString(), value.ToString());
+
+                        // check if key in the enumerator
+                        if(Enum.IsDefined(typeof(drawable_terrain_types), key.ToString()))
+                        {
+                            // add keys to properties using the enumerator
+                            drawable_terrain_types keys_to_add = (drawable_terrain_types)Enum.Parse(typeof(drawable_terrain_types), key.ToString());
+                            properties.Add(keys_to_add, value.ToString());
+                        }
                     }
 
                     if (!action(new MapFeatureData

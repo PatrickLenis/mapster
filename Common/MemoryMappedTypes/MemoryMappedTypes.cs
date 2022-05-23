@@ -106,6 +106,27 @@ public enum GeometryType : byte
     Point
 }
 
+// added an enumerator to store all the possible types of drawable terrain
+// this will help eliminate the overhead caused by using strings
+public enum drawable_terrain_types : int
+{
+        admin_level,
+        amenity,
+        boundary,
+        building,
+        farm,
+        highway,
+        landuse,
+        leisure,
+        name,
+        natural,
+        place,
+        railway,
+        reservoir,
+        residential,
+        water
+}
+
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
 public struct PropertyEntryList
 {
