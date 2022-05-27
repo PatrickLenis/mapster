@@ -110,21 +110,55 @@ public enum GeometryType : byte
 // this will help eliminate the overhead caused by using strings
 public enum drawable_terrain_types : int
 {
-        admin_level,
-        amenity,
-        boundary,
-        building,
-        farm,
-        highway,
-        landuse,
-        leisure,
-        name,
-        natural,
-        place,
-        railway,
-        reservoir,
-        residential,
-        water
+    admin_level,
+    amenity,
+    boundary,
+    building,
+    farm,
+    highway,
+    landuse,
+    leisure,
+    name,
+    natural,
+    place,
+    railway,
+    reservoir,
+    residential,
+    water
+}
+
+// added an enumerator to store all the possible types of drawable land type terrain
+public enum drawable_terrain_types_land
+{
+    allotments,
+    basin,
+    brownfield,
+    cemetery,
+    commercial,
+    construction,
+    farm,
+    forest,
+    grass,
+    greenfield,
+    industrial,
+    meadow,
+    military,
+    orchard,
+    quarry,
+    recreation_ground,
+    reservoir,
+    residential,
+    square,
+    winter_sports
+}
+
+// added an enumerator to store all the possible types of drawable urban type terrain
+public enum drawable_terrain_types_urban
+{
+    city,
+    hamlet,
+    locality,
+    town
 }
 
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
@@ -138,9 +172,16 @@ public struct PropertyEntryList
 public struct MapFeature
 {
     // https://wiki.openstreetmap.org/wiki/Key:highway
-    public static string[] HighwayTypes =
+    public enum HighwayTypes // replaced strings with enumerator
     {
-        "motorway", "trunk", "primary", "secondary", "tertiary", "unclassified", "residential", "road"
+        motorway,
+        primary,
+        residential,
+        road,
+        secondary,
+        tertiary,
+        trunk,
+        unclassified
     };
 
     [FieldOffset(0)] public long Id;

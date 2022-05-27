@@ -229,8 +229,9 @@ public struct PopulatedPlace : BaseShape
             // used data from the enumerator instead of string
             if (entry.Key == drawable_terrain_types.place)
             {
-                if (entry.Value.StartsWith("city") || entry.Value.StartsWith("town") ||
-                    entry.Value.StartsWith("locality") || entry.Value.StartsWith("hamlet"))
+                if(Enum.TryParse<drawable_terrain_types_urban>(entry.Value, true, out var urban_results)
+                    && urban_results is drawable_terrain_types_urban.town or drawable_terrain_types_urban.hamlet
+                    or drawable_terrain_types_urban.city or drawable_terrain_types_urban.locality)
                 {
                     return true;
                 }

@@ -13,8 +13,9 @@ public static class TileRenderer
         BaseShape? baseShape = null;
 
         var featureType = feature.Type;
+        MapFeature.HighwayTypes hyghway_results;
         // used data from the enumerator instead of string
-        if (feature.Properties.Any(p => p.Key == drawable_terrain_types.highway && MapFeature.HighwayTypes.Any(v => p.Value.StartsWith(v))))
+        if (feature.Properties.Any(p => p.Key == drawable_terrain_types.highway && Enum.TryParse(p.Value, true, out hyghway_results)))
         {
             var coordinates = feature.Coordinates;
             var road = new Road(coordinates);
@@ -61,7 +62,8 @@ public static class TileRenderer
             shapes.Enqueue(geoFeature, geoFeature.ZIndex);
         }
         // used data from the enumerator instead of string
-        else if (feature.Properties.Any(p => p.Key == drawable_terrain_types.boundary && p.Value.StartsWith("forest")))
+        else if (feature.Properties.Any(p => p.Key == drawable_terrain_types.boundary 
+            && Enum.TryParse<drawable_terrain_types_land>(p.Value, true, out var land_type_results) && land_type_results is drawable_terrain_types_land.forest))
         {
             var coordinates = feature.Coordinates;
             var geoFeature = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Forest);
@@ -69,7 +71,9 @@ public static class TileRenderer
             shapes.Enqueue(geoFeature, geoFeature.ZIndex);
         }
         // used data from the enumerator instead of string
-        else if (feature.Properties.Any(p => p.Key == drawable_terrain_types.landuse && (p.Value.StartsWith("forest") || p.Value.StartsWith("orchard"))))
+        else if (feature.Properties.Any(p => p.Key == drawable_terrain_types.landuse 
+            && Enum.TryParse<drawable_terrain_types_land>(p.Value, true, out var land_type_results)
+            && land_type_results is drawable_terrain_types_land.forest or drawable_terrain_types_land.orchard))
         {
             var coordinates = feature.Coordinates;
             var geoFeature = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Forest);
@@ -78,9 +82,12 @@ public static class TileRenderer
         }
         else if (feature.Type == GeometryType.Polygon && feature.Properties.Any(
             // used data from the enumerator instead of string
-            p => p.Key == drawable_terrain_types.landuse && (p.Value.StartsWith("residential") || p.Value.StartsWith("cemetery") || p.Value.StartsWith("industrial") || p.Value.StartsWith("commercial") ||
-                                                        p.Value.StartsWith("square") || p.Value.StartsWith("construction") || p.Value.StartsWith("military") || p.Value.StartsWith("quarry") ||
-                                                        p.Value.StartsWith("brownfield"))))
+            p => p.Key == drawable_terrain_types.landuse
+                && Enum.TryParse<drawable_terrain_types_land>(p.Value, true, out var land_type_results)
+                && land_type_results is drawable_terrain_types_land.cemetery
+                or drawable_terrain_types_land.industrial or drawable_terrain_types_land.commercial
+                or drawable_terrain_types_land.square or drawable_terrain_types_land.construction
+                or drawable_terrain_types_land.military or drawable_terrain_types_land.quarry or drawable_terrain_types_land.brownfield))
         {
             var coordinates = feature.Coordinates;
             var geoFeature = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Residential);
@@ -89,8 +96,12 @@ public static class TileRenderer
         }
         else if (feature.Type == GeometryType.Polygon && feature.Properties.Any(
             // used data from the enumerator instead of string
-            p => p.Key == drawable_terrain_types.landuse && (p.Value.StartsWith("farm") || p.Value.StartsWith("meadow") || p.Value.StartsWith("grass") || p.Value.StartsWith("greenfield") ||
-                                                        p.Value.StartsWith("recreation_ground") || p.Value.StartsWith("winter_sports") || p.Value.StartsWith("allotments"))))
+            p => p.Key == drawable_terrain_types.landuse 
+                && Enum.TryParse<drawable_terrain_types_land>(p.Value, true, out var land_type_results)
+                && land_type_results is drawable_terrain_types_land.farm or drawable_terrain_types_land.meadow
+                or drawable_terrain_types_land.grass or drawable_terrain_types_land.greenfield
+                or drawable_terrain_types_land.recreation_ground or drawable_terrain_types_land.winter_sports
+                or drawable_terrain_types_land.allotments))
         {
             var coordinates = feature.Coordinates;
             var geoFeature = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Plain);
@@ -99,7 +110,10 @@ public static class TileRenderer
         }
         // used data from the enumerator instead of string
         else if (feature.Type == GeometryType.Polygon &&
-                 feature.Properties.Any(p => p.Key == drawable_terrain_types.landuse && (p.Value.StartsWith("reservoir") || p.Value.StartsWith("basin"))))
+                 feature.Properties.Any(p => p.Key == drawable_terrain_types.landuse
+                 && Enum.TryParse<drawable_terrain_types_land>(p.Value, true, out var land_type_results)
+                 && land_type_results is drawable_terrain_types_land.reservoir
+                 or drawable_terrain_types_land.basin))
         {
             var coordinates = feature.Coordinates;
             var geoFeature = new GeoFeature(coordinates, GeoFeature.GeoFeatureType.Water);
